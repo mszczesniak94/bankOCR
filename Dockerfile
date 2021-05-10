@@ -1,10 +1,13 @@
-FROM php:7.4.5-fpm-alpine
+FROM php:7.4.5-fpm-alpine AS base-env
+
+FROM base-env AS base-image
 
 ARG xdebug=true
 
-WORKDIR "/bankOCR"
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/bin/composer
 
-RUN apk add --no-cache autoconf g++ make
+RUN apk add --no-cache autoconf g++ make git bash
 RUN docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-install opcache
 
@@ -27,4 +30,8 @@ RUN echo 'realpath_cache_ttl=120' >> /usr/local/etc/php/php.ini \
 RUN echo 'opcache.memory_consumption=256' >> /usr/local/etc/php/php.ini \
     && echo 'opcache.max_accelerated_files=20000' >> /usr/local/etc/php/php.ini
 
-COPY composer-installer.sh /tmp
+FROM base-image AS base-app
+
+WORKDIR /application
+COPY . .
+CMD composer install
