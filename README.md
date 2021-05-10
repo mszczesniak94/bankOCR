@@ -2,7 +2,8 @@
 Test case 1,2,3,4;
 
 ## Installations
- - Go to docker folder in project and run docker-run.sh
+ - `docker-compose up -d`
+ - `docker exec -it bank_ocr_php bash`
  - Create test file with account numbers
  - Start command with `bin/console ocr:scan:account_numbers [fileNamePath]` 
  
